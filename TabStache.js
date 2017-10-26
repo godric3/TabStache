@@ -31,7 +31,7 @@ const TabStache = {
         let stache = document.createElement('button');
         stache.setAttribute('value', bookmark.id);
         stache.setAttribute('class', 'stache');
-        stache.addEventListener('click', this.unload_stache());
+        stache.addEventListener('click', this.unload_stache(bookmark.title));
         stache.appendChild(document.createTextNode(bookmark.title));
         let li = document.createElement('article');
         li.appendChild(stache);
@@ -60,6 +60,9 @@ const TabStache = {
       'title': this.new_stache.value
     },this.load_stache());
     this.new_stache.value = "";
+    chrome.storage.sync.set({'lastName': ""}, function() {
+        // Notify that we saved.
+     });
   },
 
   load_stache: function () {
@@ -91,9 +94,12 @@ const TabStache = {
     };
   },
 
-  unload_stache: function() {
+  unload_stache: function(name) {
     const self = this;
     return function() {
+      chrome.storage.sync.set({'lastName': name}, function() {
+        // Notify that we saved.
+       });
       self.chromeBookmarkObj.getChildren(this.value, (children) => {
         children.forEach((bookmark) => {
           self.chromeTabsObj.create({

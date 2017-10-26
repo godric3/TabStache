@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
   stache.setCacheList(document.getElementById('stache_list'));
   stache.setChromeBookmarks(chrome.bookmarks);
   stache.setChromeTabs(chrome.tabs);
+  chrome.storage.sync.get({
+        lastName: ''
+    }, function (items) {
+         stache.new_stache.value = items.lastName;
+    });
   chrome.bookmarks.search({
       'title': 'TabStache_base'
   }, stache.genSearchResult());
