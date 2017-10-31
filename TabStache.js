@@ -67,6 +67,8 @@ const TabStache = {
     return (node) => {
       self.chromeTabsObj.getAllInWindow(null, (tabs) => {
         let urls = tabs.map(tab => tab.url);
+        let created = false;
+        self.chromeTabsObj.create({ 'url': 'about:blank' });
         for (let i in tabs) {
           // some tabs should be ignored
           // 1. ignore dublicate tabs
@@ -85,8 +87,11 @@ const TabStache = {
             'url': tabs[i].url
           });
           self.chromeTabsObj.remove(tabs[i].id);
+          created = true;
         }
-        self.chromeTabsObj.create({ 'url': 'about:blank' });
+        if (!created) {
+            self.chromeBookmarkObj.removeTree(node.id);
+        }
       });
     };
   },
